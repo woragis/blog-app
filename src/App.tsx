@@ -1,12 +1,12 @@
+import { BrowserRouter } from "react-router-dom";
 import "./App.css";
-import Login from "./pages/Login";
+import AppRouter from "./pages/router";
 
 function App() {
   return (
-    <>
-      <h1>Blog App</h1>
-      <Login />
-    </>
+    <BrowserRouter>
+      <AppRouter />
+    </BrowserRouter>
   );
 }
 

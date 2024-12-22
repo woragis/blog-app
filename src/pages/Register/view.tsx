@@ -1,29 +1,11 @@
-import { ChangeEvent, FormEvent, useState } from "react";
-import { useAppDispatch } from "../../features/hooks";
-import { useSelector } from "react-redux";
-import { RootState } from "../../features/store";
-import { register } from "../../features/auth/authSlice";
-import { RegisterInterface } from "../../types/auth.types";
+import { useRegisterModel } from "./model";
 
-export const RegisterView = () => {
-  const dispatch = useAppDispatch(); // Use the typed dispatch
-  const auth = useSelector((state: RootState) => state.auth); // Access auth state
-  const [registerData, setRegisterData] = useState<RegisterInterface>(
-    {} as RegisterInterface
-  );
-
-  const handleRegisterChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setRegisterData((prevState) => ({
-      ...prevState,
-      [event.target.name]: event.target.value,
-    }));
-  };
-
-  const handleRegisterSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    dispatch(register(registerData)); // Dispatch the register thunk
-  };
-
+export const RegisterView = ({
+  auth,
+  registerData,
+  handleRegisterChange,
+  handleRegisterSubmit,
+}: ReturnType<typeof useRegisterModel>) => {
   return (
     <div>
       <h1>Register</h1>
