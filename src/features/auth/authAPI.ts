@@ -4,10 +4,10 @@ import { LoginInterface, RegisterInterface } from "../../types/auth.types";
 
 export const loginAPI = async (credentials: LoginInterface) => {
   const response = await axiosInstance.post(API_ENDPOINTS.LOGIN, credentials);
-  return response.data;
+  return response.data as string;
 };
 
 export const registerAPI = async (newUser: RegisterInterface) => {
   const response = await axiosInstance.post(API_ENDPOINTS.REGISTER, newUser);
-  return response.data; // Expected to return user data
+  return response.data as string; // Expected to return user data
 };
