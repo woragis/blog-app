@@ -1,3 +1,4 @@
+import LanguageSwitcher from "../LanguageSwitcher";
 import ToggleThemeButton from "../ToggleThemeButton";
 import { useNavbarModel } from "./model";
 import {
@@ -9,24 +10,22 @@ import {
 } from "./styles";
 
 export const NavbarView = ({
-  navPages,
-  authPages,
+  navLinks,
+  authLinks,
+  themeColors,
+  navLogo,
 }: ReturnType<typeof useNavbarModel>) => {
-  const navLinksComponent = navPages.map(({ title, path }) => {
+  const navLinksComponent = navLinks.map(({ title, path }) => {
     return (
       <NavLinkItem key={title + "_nav_link"}>
-        <NavLink to={path} color="#fff">
-          {title}
-        </NavLink>
+        <NavLink to={path}>{title}</NavLink>
       </NavLinkItem>
     );
   });
-  const authLinksComponent = authPages.map(({ title, path }) => {
+  const authLinksComponent = authLinks.map(({ title, path }) => {
     return (
       <NavLinkItem key={title + "_nav_link"}>
-        <NavLink to={path} color="#fff">
-          {title}
-        </NavLink>
+        <NavLink to={path}>{title}</NavLink>
       </NavLinkItem>
     );
   });
@@ -35,12 +34,20 @@ export const NavbarView = ({
     let header = document.querySelector(".navbar");
     header?.classList.toggle("sticky", window.scrollY > 0);
   });
+
   return (
-    <StyledNavbar backgroundColor="#000">
-      <NavbarLogo />
+    <StyledNavbar
+      className="navbar"
+      color={themeColors.primary.main}
+      backgroundColor={themeColors.background.default}
+      invertedColor={themeColors.background.default}
+      invertedBackgroundColor={themeColors.primary.main}
+    >
+      <NavbarLogo src={navLogo} />
       <NavLinksContainer>
         {navLinksComponent}
         {authLinksComponent}
+        <LanguageSwitcher />
         <ToggleThemeButton />
       </NavLinksContainer>
     </StyledNavbar>

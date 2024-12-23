@@ -8,7 +8,7 @@ export enum Pages {
 }
 
 export interface NavPages {
-  title: Pages;
+  title: string;
   path: Pages;
 }
 

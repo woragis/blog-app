@@ -15,6 +15,7 @@ import {
 
 const initialState: PostsState = {
   posts: [],
+  post: null,
   status: "idle",
   error: null,
 };
@@ -138,8 +139,9 @@ const postsSlice = createSlice({
         state.status = "loading";
         state.error = null;
       })
-      .addCase(getPost.fulfilled, (state) => {
+      .addCase(getPost.fulfilled, (state, action) => {
         state.status = "succeeded";
+        state.post = action.payload;
       })
       .addCase(getPost.rejected, (state, action) => {
         state.status = "failed";

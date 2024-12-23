@@ -18,6 +18,7 @@ export interface PostResponse {
 
 export interface PostsState {
   posts: PostResponse[];
+  post: PostResponse | null;
   status: ReduxStatus;
   error: string | null;
 }

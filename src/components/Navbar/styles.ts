@@ -1,12 +1,11 @@
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 
-interface NavLinkProps {
-  color: string;
-}
-
 interface NavbarProps {
+  color: string;
   backgroundColor: string;
+  invertedColor: string;
+  invertedBackgroundColor: string;
 }
 
 export const StyledNavbar = styled.nav<NavbarProps>`
@@ -15,10 +14,13 @@ export const StyledNavbar = styled.nav<NavbarProps>`
   &.sticky {
     --padding-vertical: 5px;
     padding: var(--padding-vertical) var(--padding-horizontal);
-    background-color: white;
-    a {
-      color: #000;
+    background-color: ${(_) => _.invertedBackgroundColor};
+    * {
+      color: ${(_) => _.invertedColor};
     }
+  }
+  * {
+    color: ${(_) => _.color};
   }
   font-family: "Poppins", sans-serif;
   z-index: 2;
@@ -57,12 +59,10 @@ export const NavLinkItem = styled.li`
   list-style: none;
 `;
 
-export const NavLink = styled(Link)<NavLinkProps>`
+export const NavLink = styled(Link)`
   position: relative;
   margin: 0 15px;
   text-decoration: none;
-  color: ${(_) => _.color};
-  color: #fff;
   letter-spacing: 2px;
   font-weight: 500;
   transition: 600ms;

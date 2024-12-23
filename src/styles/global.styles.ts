@@ -16,7 +16,7 @@ export const GlobalStyles = () => {
     }
 
     body {
-      min-height: 100vh;
+      min-height: 300vh;
       background-color: ${theme.colors.background.default};
     }
 

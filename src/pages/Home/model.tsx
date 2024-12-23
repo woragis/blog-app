@@ -6,11 +6,9 @@ import { useAppDispatch } from "../../features/hooks";
 
 export const useHomeModel = () => {
   const token = useSelector((state: RootState) => state.auth.token);
-  const dispatch = useAppDispatch();
-  // const [posts, setPosts] = useState<PostResponse[]>([])
   const posts = useSelector((state: RootState) => state.posts.posts);
+  const dispatch = useAppDispatch();
   useEffect(() => {
-    console.log("Stored token: ", token);
     dispatch(getPosts(token));
   }, []);
   return { posts };
