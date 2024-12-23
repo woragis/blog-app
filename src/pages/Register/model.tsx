@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { useAppDispatch } from "../../features/hooks";
 import { useSelector } from "react-redux";
 import { RootState } from "../../features/store";
-import { register } from "../../features/auth/authSlice";
+import { register } from "../../features/slices/authSlice";
 import { RegisterInterface } from "../../types/auth.types";
 
 export const useRegisterModel = () => {

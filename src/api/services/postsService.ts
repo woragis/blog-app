@@ -1,42 +1,65 @@
-import {
-  CreatePostRequest,
-  PostResponse,
-  UpdatePostRequest,
-} from "../../types/posts.types";
-import axiosInstance from "../axiosInstance";
-import { API_ENDPOINTS } from "../endpoints";
+import axiosInstance from "../../api/axiosInstance";
+import { API_ENDPOINTS } from "../../api/endpoints";
+import { CreatePostRequest, PostResponse } from "../../types/posts.types";
 
-export const fetchPosts = async () => {
-  console.log("Post service: starting axios get request");
-  const { data } = await axiosInstance.get(API_ENDPOINTS.POSTS);
-  console.log("Post service: finished axios get request");
-  return data as PostResponse;
+export const getPostsService = async (token: string) => {
+  console.log("API: starting posts 'get (many)' request");
+  const response = await axiosInstance.get(API_ENDPOINTS.POSTS, {
+    headers: { authorization: `Bearer ${token}` },
+  });
+  console.log("API: finished posts 'get (many)' request");
+  return response.data as PostResponse[];
 };
 
-export const createPost = async (post: CreatePostRequest) => {
-  const { data } = await axiosInstance.post(API_ENDPOINTS.USERS, post);
-  return data as PostResponse;
-};
-
-export const fetchPost = async (post_id: number) => {
-  const { data } = await axiosInstance.get(API_ENDPOINTS.POSTS + `/${post_id}`);
-  return data as PostResponse;
-};
-
-export const updatePost = async (
-  post_id: number,
-  updatedPost: UpdatePostRequest
+export const createPostService = async (
+  token: string,
+  post: CreatePostRequest
 ) => {
-  const { data } = await axiosInstance.put(
-    API_ENDPOINTS.POSTS + `/${post_id}`,
-    updatedPost
-  );
-  return data as PostResponse;
+  console.log("API: starting posts 'post' request");
+  const response = await axiosInstance.post(API_ENDPOINTS.POSTS, post, {
+    headers: { authorization: `Bearer ${token}` },
+  });
+  console.log("API: finished posts 'post' request");
+  return response.data as PostResponse;
 };
 
-export const deletePost = async (post_id: number) => {
-  const { data } = await axiosInstance.delete(
-    API_ENDPOINTS.POSTS + `/${post_id}`
+export const getPostService = async (token: string, post_id: number) => {
+  console.log("API: starting posts 'get' request");
+  const response = await axiosInstance.get(
+    API_ENDPOINTS.POSTS + `/${post_id}`,
+    {
+      headers: { authorization: `Bearer ${token}` },
+    }
   );
-  return data as boolean;
+  console.log("API: finished posts 'get' request");
+  return response.data as PostResponse;
+};
+
+export const updatePostService = async (
+  token: string,
+  post_id: number,
+  post: CreatePostRequest
+) => {
+  console.log("API: starting posts 'put' request");
+  const response = await axiosInstance.post(
+    API_ENDPOINTS.POSTS + `/${post_id}`,
+    post,
+    {
+      headers: { authorization: `Bearer ${token}` },
+    }
+  );
+  console.log("API: finished posts 'put' request");
+  return response.data as PostResponse;
+};
+
+export const deletePostService = async (token: string, post_id: number) => {
+  console.log("API: starting posts 'delete' request");
+  const response = await axiosInstance.delete(
+    API_ENDPOINTS.POSTS + `/${post_id}`,
+    {
+      headers: { authorization: `Bearer ${token}` },
+    }
+  );
+  console.log("API: finished posts 'delete' request");
+  return response.data as boolean;
 };

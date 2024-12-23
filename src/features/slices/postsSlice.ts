@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  createPostAPI,
-  getPostAPI,
-  getPostsAPI,
-  updatePostAPI,
-  deletePostAPI,
-} from "./postsAPI";
+  createPostService,
+  getPostService,
+  getPostsService,
+  updatePostService,
+  deletePostService,
+} from "../../api/services/postsService";
 import {
   CreatePostRequest,
   PostResponse,
@@ -23,7 +23,7 @@ export const getPosts = createAsyncThunk(
   "posts/getMany",
   async (token: string, { rejectWithValue }) => {
     try {
-      const posts = await getPostsAPI(token);
+      const posts = await getPostsService(token);
       return posts as PostResponse[];
     } catch (error: any) {
       return rejectWithValue(
@@ -40,7 +40,7 @@ export const createPost = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const newPostId = await createPostAPI(payload.token, payload.post);
+      const newPostId = await createPostService(payload.token, payload.post);
       return newPostId;
     } catch (error: any) {
       return rejectWithValue(
@@ -54,7 +54,7 @@ export const getPost = createAsyncThunk(
   "posts/get",
   async (payload: { token: string; post_id: number }, { rejectWithValue }) => {
     try {
-      const post = await getPostAPI(payload.token, payload.post_id);
+      const post = await getPostService(payload.token, payload.post_id);
       return post as PostResponse;
     } catch (error: any) {
       return rejectWithValue(
@@ -71,7 +71,7 @@ export const updatePost = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const post = await updatePostAPI(
+      const post = await updatePostService(
         payload.token,
         payload.post_id,
         payload.post
@@ -89,7 +89,7 @@ export const deletePost = createAsyncThunk(
   "posts/delete",
   async (payload: { token: string; post_id: number }, { rejectWithValue }) => {
     try {
-      const deleted = await deletePostAPI(payload.token, payload.post_id);
+      const deleted = await deletePostService(payload.token, payload.post_id);
       return deleted as boolean;
     } catch (error: any) {
       return rejectWithValue(

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getPosts } from "../../features/posts/postsSlice";
+import { getPosts } from "../../features/slices/postsSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../features/store";
 import { useAppDispatch } from "../../features/hooks";

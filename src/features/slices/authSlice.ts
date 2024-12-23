@@ -4,24 +4,31 @@ import {
   LoginInterface,
   RegisterInterface,
 } from "../../types/auth.types";
-import { loginAPI, registerAPI } from "./authAPI";
+import { loginService, registerService } from "../../api/services/authService";
 import Cookies from "js-cookie";
 
-const initialState: AuthState = {
-  user: null,
-  loggedIn: false,
-  token: "",
-  status: "idle",
-  error: null,
+const getInitialAuthState = (): AuthState => {
+  const token = Cookies.get("auth_token") || "";
+  const user = localStorage.getItem("auth_user");
+
+  return {
+    user: user ? JSON.parse(user) : null,
+    token,
+    loggedIn: !token,
+    status: "idle",
+    error: null,
+  };
 };
+
+const initialState: AuthState = getInitialAuthState();
 
 export const login = createAsyncThunk(
   "auth/login",
   async (credentials: LoginInterface, { rejectWithValue }) => {
     try {
-      const { token, user } = await loginAPI(credentials);
-      console.log("Login response: \nToken: ", token, "\nUser: ", user);
+      const { token, user } = await loginService(credentials);
       Cookies.set("auth_token", token, { expires: 7 });
+      localStorage.setItem("auth_user", JSON.stringify(user));
       return { token, user };
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Login failed");
@@ -33,9 +40,9 @@ export const register = createAsyncThunk(
   "auth/register",
   async (details: RegisterInterface, { rejectWithValue }) => {
     try {
-      const { token, user } = await registerAPI(details);
-      console.log("Register response: \nToken: ", token, "\nUser: ", user);
+      const { token, user } = await registerService(details);
       Cookies.set("auth_token", token, { expires: 7 });
+      localStorage.setItem("auth_user", JSON.stringify(user));
       return { token, user };
     } catch (error: any) {
       return rejectWithValue(
@@ -50,6 +57,9 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
+      Cookies.remove("auth_token");
+      localStorage.removeItem("auth_user");
+
       state.user = null;
       state.token = "";
       state.loggedIn = false;

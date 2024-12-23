@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { LoginInterface } from "../../types/auth.types";
-import { login } from "../../features/auth/authSlice";
+import { login } from "../../features/slices/authSlice";
 import { useAppDispatch } from "../../features/hooks";
 import { useSelector } from "react-redux";
 import { RootState } from "../../features/store";
