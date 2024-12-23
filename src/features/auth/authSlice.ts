@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 const initialState: AuthState = {
   user: null,
   loggedIn: false,
+  token: null,
   status: "idle",
   error: null,
 };

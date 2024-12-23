@@ -1,4 +1,4 @@
-export type ReduxStatus = "idle" | "loading" | "succeeded" | "failed";
+import { ReduxStatus } from "./redux.types";
 
 export interface AuthUser {
   id: number;
@@ -21,6 +21,7 @@ export interface AuthUser {
 export interface AuthState {
   user: AuthUser | null;
   loggedIn: boolean;
+  token: string | null;
   status: ReduxStatus;
   error: string | null;
 }
