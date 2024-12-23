@@ -4,12 +4,12 @@ import light from "../../styles/themes/light";
 
 interface ThemeSliceInterface {
   isDarkMode: boolean;
-  theme: typeof dark;
+  colors: typeof dark;
 }
 
 const initialState: ThemeSliceInterface = {
   isDarkMode: true,
-  theme: dark,
+  colors: dark,
 };
 
 const themeSlice = createSlice({
@@ -18,18 +18,18 @@ const themeSlice = createSlice({
   reducers: {
     toggleTheme: (state) => {
       state.isDarkMode = !state.isDarkMode;
-      state.theme = state.isDarkMode ? light : dark;
+      state.colors = state.isDarkMode ? light : dark;
     },
     setLightTheme: (state) => {
       state.isDarkMode = false;
-      state.theme = light;
+      state.colors = light;
     },
     setDarkTheme: (state) => {
       state.isDarkMode = true;
-      state.theme = dark;
+      state.colors = dark;
     },
   },
 });
 
-export const { toggleTheme } = themeSlice.actions;
+export const { toggleTheme, setLightTheme, setDarkTheme } = themeSlice.actions;
 export default themeSlice.reducer;

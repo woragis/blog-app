@@ -1,5 +1,4 @@
 import { BrowserRouter } from "react-router-dom";
-import "./App.css";
 import AppRouter from "./pages/router";
 import { Global, ThemeProvider } from "@emotion/react";
 import { GlobalStyles } from "./styles/global.styles";

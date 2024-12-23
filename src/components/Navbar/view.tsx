@@ -1,3 +1,4 @@
+import ToggleThemeButton from "../ToggleThemeButton";
 import { useNavbarModel } from "./model";
 import {
   NavbarLogo,
@@ -40,6 +41,7 @@ export const NavbarView = ({
       <NavLinksContainer>
         {navLinksComponent}
         {authLinksComponent}
+        <ToggleThemeButton />
       </NavLinksContainer>
     </StyledNavbar>
   );

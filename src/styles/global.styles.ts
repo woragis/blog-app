@@ -1,16 +1,27 @@
 import { css } from "@emotion/react";
+import { useSelector } from "react-redux";
+import { RootState } from "../features/store";
 
-export const GlobalStyles = css`
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    text-decoration: none;
-    list-style-type: none;
-    font-family: "Roboto", sans-serif;
-  }
+export const GlobalStyles = () => {
+  const theme = useSelector((state: RootState) => state.theme);
 
-  a {
-    color: white;
-  }
-`;
+  return css`
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      text-decoration: none;
+      list-style-type: none;
+      font-family: "Roboto", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: ${theme.colors.background.default};
+    }
+
+    a {
+      color: white;
+    }
+  `;
+};
