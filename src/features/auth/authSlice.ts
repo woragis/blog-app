@@ -18,10 +18,10 @@ export const login = createAsyncThunk(
   "auth/login",
   async (credentials: LoginInterface, { rejectWithValue }) => {
     try {
-      const token: string = await loginAPI(credentials);
-      console.log("Login response: ", token);
+      const { token, user } = await loginAPI(credentials);
+      console.log("Login response: \nToken: ", token, "\nUser: ", user);
       Cookies.set("auth_token", token, { expires: 7 });
-      return token;
+      return { token, user };
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Login failed");
     }
@@ -32,10 +32,10 @@ export const register = createAsyncThunk(
   "auth/register",
   async (details: RegisterInterface, { rejectWithValue }) => {
     try {
-      const token: string = await registerAPI(details);
-      console.log("Register response: ", token);
+      const { token, user } = await registerAPI(details);
+      console.log("Register response: \nToken: ", token, "\nUser: ", user);
       Cookies.set("auth_token", token, { expires: 7 });
-      return token;
+      return { token, user };
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || "Register failed"
@@ -61,8 +61,9 @@ const authSlice = createSlice({
         state.status = "loading";
         state.error = null;
       })
-      .addCase(login.fulfilled, (state) => {
+      .addCase(login.fulfilled, (state, action) => {
         state.status = "succeeded";
+        state.user = action.payload.user;
         state.loggedIn = true;
       })
       .addCase(login.rejected, (state, action) => {
@@ -75,8 +76,9 @@ const authSlice = createSlice({
         state.status = "loading";
         state.error = null;
       })
-      .addCase(register.fulfilled, (state) => {
+      .addCase(register.fulfilled, (state, action) => {
         state.status = "succeeded";
+        state.user = action.payload.user;
         state.loggedIn = true;
       })
       .addCase(register.rejected, (state, action) => {

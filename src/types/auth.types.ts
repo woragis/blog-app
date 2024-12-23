@@ -1,13 +1,25 @@
 export type ReduxStatus = "idle" | "loading" | "succeeded" | "failed";
 
-export interface AuthUserInterface {
-  name: string;
+export interface AuthUser {
+  id: number;
+  first_name: string;
+  last_name: string;
   email: string;
-  token: string;
+  role: string;
+  blog_role: string;
+  store_role: string;
+  youtube_role: string;
+  fanfic_role: string;
+  profile_picture?: string;
+  phone_number?: string;
+  is_verified: boolean;
+  last_login?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface AuthState {
-  user: AuthUserInterface | null;
+  user: AuthUser | null;
   loggedIn: boolean;
   status: ReduxStatus;
   error: string | null;
@@ -22,4 +34,9 @@ export interface RegisterInterface {
 export interface LoginInterface {
   email: string;
   password: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: AuthUser;
 }
