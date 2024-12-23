@@ -7,7 +7,9 @@ import axiosInstance from "../axiosInstance";
 import { API_ENDPOINTS } from "../endpoints";
 
 export const fetchPosts = async () => {
+  console.log("Post service: starting axios get request");
   const { data } = await axiosInstance.get(API_ENDPOINTS.POSTS);
+  console.log("Post service: finished axios get request");
   return data as PostResponse;
 };
 

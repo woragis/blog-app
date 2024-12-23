@@ -19,6 +19,20 @@ const initialState: PostsState = {
   error: null,
 };
 
+export const getPosts = createAsyncThunk(
+  "posts/getMany",
+  async (token: string, { rejectWithValue }) => {
+    try {
+      const posts = await getPostsAPI(token);
+      return posts as PostResponse[];
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to get posts"
+      );
+    }
+  }
+);
+
 export const createPost = createAsyncThunk(
   "posts/create",
   async (
@@ -36,22 +50,22 @@ export const createPost = createAsyncThunk(
   }
 );
 
-export const getPosts = createAsyncThunk(
-  "posts/getPosts",
-  async (token: string, { rejectWithValue }) => {
+export const getPost = createAsyncThunk(
+  "posts/get",
+  async (payload: { token: string; post_id: number }, { rejectWithValue }) => {
     try {
-      const posts = await getPostsAPI(token);
-      return posts as PostResponse[];
+      const post = await getPostAPI(payload.token, payload.post_id);
+      return post as PostResponse;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to get posts"
+        error.response?.data?.message || "Failed to delete post"
       );
     }
   }
 );
 
 export const updatePost = createAsyncThunk(
-  "posts/updatePost",
+  "posts/update",
   async (
     payload: { token: string; post_id: number; post: UpdatePostRequest },
     { rejectWithValue }
@@ -71,22 +85,8 @@ export const updatePost = createAsyncThunk(
   }
 );
 
-export const getPost = createAsyncThunk(
-  "posts/getPost",
-  async (payload: { token: string; post_id: number }, { rejectWithValue }) => {
-    try {
-      const post = await getPostAPI(payload.token, payload.post_id);
-      return post as PostResponse;
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to delete post"
-      );
-    }
-  }
-);
-
 export const deletePost = createAsyncThunk(
-  "posts/deletePost",
+  "posts/delete",
   async (payload: { token: string; post_id: number }, { rejectWithValue }) => {
     try {
       const deleted = await deletePostAPI(payload.token, payload.post_id);

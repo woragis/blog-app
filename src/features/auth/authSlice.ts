@@ -10,7 +10,7 @@ import Cookies from "js-cookie";
 const initialState: AuthState = {
   user: null,
   loggedIn: false,
-  token: null,
+  token: "",
   status: "idle",
   error: null,
 };
@@ -51,6 +51,7 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.user = null;
+      state.token = "";
       state.loggedIn = false;
     },
   },
@@ -65,6 +66,7 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.user = action.payload.user;
+        state.token = action.payload.token;
         state.loggedIn = true;
       })
       .addCase(login.rejected, (state, action) => {
@@ -80,6 +82,7 @@ const authSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.user = action.payload.user;
+        state.token = action.payload.token;
         state.loggedIn = true;
       })
       .addCase(register.rejected, (state, action) => {

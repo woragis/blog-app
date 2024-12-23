@@ -1,9 +1,4 @@
-interface API_ENDPOINTS_INTERFACE {
-  USERS: string;
-  POSTS: string;
-  LOGIN: string;
-  REGISTER: string;
-}
+import { API_ENDPOINTS_INTERFACE } from "../types/axios.types";
 
 export const API_ENDPOINTS: API_ENDPOINTS_INTERFACE = {
   USERS: "/users",

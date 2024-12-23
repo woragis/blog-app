@@ -21,7 +21,7 @@ export interface AuthUser {
 export interface AuthState {
   user: AuthUser | null;
   loggedIn: boolean;
-  token: string | null;
+  token: string;
   status: ReduxStatus;
   error: string | null;
 }
