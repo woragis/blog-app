@@ -6,7 +6,14 @@ export const LanguageSwitcherView = ({
   languages,
 }: ReturnType<typeof useLanguageSwitcherModel>) => {
   const languagesComponent = languages.map(({ code, label }) => {
-    return <button onClick={() => changeLanguage(code)}>{label}</button>;
+    return (
+      <button
+        key={code + "_language_button"}
+        onClick={() => changeLanguage(code)}
+      >
+        {label}
+      </button>
+    );
   });
   return (
     <div>

@@ -16,13 +16,11 @@ export const GlobalStyles = () => {
     }
 
     body {
-      min-height: 300vh;
       padding: 130px 0;
       background-color: ${theme.colors.background.default};
     }
     nav {
       max-height: 130px;
-      border-bottom: 1px solid red;
     }
 
     a {

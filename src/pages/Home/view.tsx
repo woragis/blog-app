@@ -4,7 +4,7 @@ import { useHomeModel } from "./model";
 export const HomeView = ({ posts }: ReturnType<typeof useHomeModel>) => {
   const postsComponent = posts.map((post) => {
     return (
-      <li>
+      <li key={`posts_post_${post.id}`}>
         <header>
           <h3>{post.title}</h3>
           <p>Author: {post.author_id}</p>
