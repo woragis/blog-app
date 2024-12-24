@@ -1,3 +1,4 @@
+import HeroSection from "../../components/HeroSection";
 import { useHomeModel } from "./model";
 
 export const HomeView = ({ posts }: ReturnType<typeof useHomeModel>) => {
@@ -22,7 +23,7 @@ export const HomeView = ({ posts }: ReturnType<typeof useHomeModel>) => {
   });
   return (
     <div>
-      HomeView
+      <HeroSection />
       <hr />
       <h1>Posts</h1>
       {postsComponent}

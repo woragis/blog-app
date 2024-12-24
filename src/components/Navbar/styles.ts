@@ -1,12 +1,6 @@
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
-
-interface NavbarProps {
-  color: string;
-  backgroundColor: string;
-  invertedColor: string;
-  invertedBackgroundColor: string;
-}
+import { NavbarProps } from "../../types/navbar.types";
 
 export const StyledNavbar = styled.nav<NavbarProps>`
   --padding-vertical: 40px;

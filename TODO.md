@@ -18,3 +18,18 @@
 
 - Cookies
   - [ ] - Secure Http
+
+## Components
+
+- Navbar
+
+  - [ ] - Style colors
+  - [ ] - Style languageSwitcher and theme **button**
+  - [ ] -
+  - [ ] -
+  - [ ] -
+  - [ ] -
+  - [ ] -
+  - [ ] -
+
+- Footer
