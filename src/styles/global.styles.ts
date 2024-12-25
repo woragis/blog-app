@@ -16,7 +16,6 @@ export const GlobalStyles = () => {
     }
 
     body {
-      padding: 130px 0;
       background-color: ${theme.colors.background.default};
     }
     nav {

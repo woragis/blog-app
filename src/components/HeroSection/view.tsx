@@ -1,5 +1,6 @@
 import { useHeroSectionModel } from "./model";
+import { StyledHeroSection } from "./styles";
 
 export const HeroSectionView = ({}: ReturnType<typeof useHeroSectionModel>) => {
-  return <div>HeroSectionView</div>;
+  return <StyledHeroSection>hello</StyledHeroSection>;
 };
