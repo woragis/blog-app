@@ -7,20 +7,27 @@ import {
   StyledListedPost,
 } from "./styles";
 
-export const ListedPostView = ({}: ReturnType<typeof useListedPostModel>) => {
+export const ListedPostView = ({
+  id,
+  title,
+  body,
+  visibility,
+  author_id,
+  created_at,
+  updated_at,
+}: ReturnType<typeof useListedPostModel>) => {
   return (
     <StyledListedPost>
-      <ListedPostTitle>
-        Usuarios descobrem a cura do luva de pedreiro
-      </ListedPostTitle>
-      <ListedPostDescription>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident,
-        dolorum? Ut id commodi cumque vero ducimus perspiciatis voluptatem nam
-        sapiente, voluptates possimus molestias cupiditate ipsam, corporis
-        numquam explicabo, harum molestiae.
-      </ListedPostDescription>
+      <ListedPostTitle>{title}</ListedPostTitle>
+      <ListedPostDescription>{body}</ListedPostDescription>
       <ListedPostMetaData>
-        <ListedPostAuthorData>Gustavo Lima</ListedPostAuthorData>
+        id: {id}
+        <br />
+        visibilidade: {visibility}
+        <ListedPostAuthorData>Author: {author_id}</ListedPostAuthorData>
+        criado: {created_at}
+        <br />
+        editado: {updated_at}
       </ListedPostMetaData>
     </StyledListedPost>
   );

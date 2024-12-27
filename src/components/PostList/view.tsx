@@ -6,10 +6,8 @@ import { PostsListContainer } from "./styles";
 export const PostListView = ({
   posts,
 }: ReturnType<typeof usePostListModel>) => {
-  const postsComponent = [...posts, {} as PostResponse].map(
-    ({ id, title, body, author_id, visibility, created_at, updated_at }) => {
-      return <ListedPost key={id + "_post_on_list"} />;
-    }
-  );
+  const postsComponent = [...posts, {} as PostResponse].map((post) => {
+    return <ListedPost key={post.id + "_post_on_list"} {...post} />;
+  });
   return <PostsListContainer>{postsComponent}</PostsListContainer>;
 };
