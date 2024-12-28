@@ -13,6 +13,7 @@ export const GlobalStyles = () => {
       text-decoration: none;
       list-style-type: none;
       font-family: "Roboto", sans-serif;
+      font-style: normal;
     }
 
     body {

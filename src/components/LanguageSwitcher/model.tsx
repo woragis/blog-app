@@ -1,4 +1,6 @@
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { RootState } from "../../features/store";
 
 export const useLanguageSwitcherModel = () => {
   const { i18n, t } = useTranslation();
@@ -11,5 +13,7 @@ export const useLanguageSwitcherModel = () => {
     { code: "pt", label: "Portugues" },
   ];
 
-  return { t, changeLanguage, languages };
+  const themeColors = useSelector((state: RootState) => state.theme.colors);
+
+  return { t, changeLanguage, languages, themeColors };
 };
