@@ -1,5 +1,10 @@
 import { useLanguageSwitcherModel } from "./model";
-import { LanguageOptionsContainer, StyledLanguageOption } from "./styles";
+import {
+  LanguageButton,
+  LanguageOptionsContainer,
+  OptionsContainer,
+  StyledLanguageOption,
+} from "./styles";
 
 export const LanguageSwitcherView = ({
   t,
@@ -22,8 +27,8 @@ export const LanguageSwitcherView = ({
       color={themeColors.secondary.dark}
       backgroundColor={themeColors.background.contrast}
     >
-      <p>{t("changeLanguage")}</p>
-      {languagesComponent}
+      <LanguageButton>{t("changeLanguage")}</LanguageButton>
+      <OptionsContainer>{languagesComponent}</OptionsContainer>
     </LanguageOptionsContainer>
   );
 };

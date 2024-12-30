@@ -49,10 +49,7 @@ export const NavbarView = ({
         <NavLinksContainer>
           {navLinksComponent}
           {authLinksComponent}
-          <details>
-            <summary>Languages</summary>
-            <LanguageSwitcher />
-          </details>
+          <LanguageSwitcher />
           <details>
             <summary>Theme</summary>
             <ToggleThemeButton />
