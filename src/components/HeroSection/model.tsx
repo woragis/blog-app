@@ -1,3 +1,3 @@
-export const useHeroSectionModel = () => {
-  return {};
+export const useHeroSectionContainerModel = (children: JSX.Element) => {
+  return { children };
 };

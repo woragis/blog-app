@@ -2,6 +2,7 @@ import LanguageSwitcher from "../LanguageSwitcher";
 import ToggleThemeButton from "../ToggleThemeButton";
 import { useNavbarModel } from "./model";
 import {
+  NavbarInvisibleContainer,
   NavbarLogo,
   NavLink,
   NavLinkItem,
@@ -36,20 +37,28 @@ export const NavbarView = ({
   });
 
   return (
-    <StyledNavbar
-      className="navbar"
-      color={themeColors.secondary.main}
-      backgroundColor={themeColors.background.default}
-      invertedColor={themeColors.background.default}
-      invertedBackgroundColor={themeColors.secondary.main}
-    >
-      <NavbarLogo src={navLogo} />
-      <NavLinksContainer>
-        {navLinksComponent}
-        {authLinksComponent}
-        <LanguageSwitcher />
-        <ToggleThemeButton />
-      </NavLinksContainer>
-    </StyledNavbar>
+    <NavbarInvisibleContainer>
+      <StyledNavbar
+        className="navbar"
+        color={themeColors.secondary.main}
+        backgroundColor={themeColors.background.default}
+        invertedColor={themeColors.background.default}
+        invertedBackgroundColor={themeColors.secondary.main}
+      >
+        <NavbarLogo src={navLogo} />
+        <NavLinksContainer>
+          {navLinksComponent}
+          {authLinksComponent}
+          <details>
+            <summary>Languages</summary>
+            <LanguageSwitcher />
+          </details>
+          <details>
+            <summary>Theme</summary>
+            <ToggleThemeButton />
+          </details>
+        </NavLinksContainer>
+      </StyledNavbar>
+    </NavbarInvisibleContainer>
   );
 };

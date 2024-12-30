@@ -4,8 +4,8 @@ export const StyledHeroSection = styled.section`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background-color: black;
+  min-height: 100vh;
   color: white;
   font-weight: bold;
+  padding-top: 120px;
 `;

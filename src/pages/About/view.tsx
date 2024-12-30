@@ -2,7 +2,7 @@ import { useAboutModel } from "./model";
 
 export const AboutView = ({}: ReturnType<typeof useAboutModel>) => {
   return (
-    <div>
+    <main>
       <h1>About</h1>
       <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
@@ -23,6 +23,6 @@ export const AboutView = ({}: ReturnType<typeof useAboutModel>) => {
         exercitationem mollitia totam ipsam sapiente voluptate voluptatibus,
         provident accusantium. Tempora?
       </p>
-    </div>
+    </main>
   );
 };

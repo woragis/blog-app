@@ -2,6 +2,10 @@ import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 import { NavbarProps } from "../../types/navbar.types";
 
+export const NavbarInvisibleContainer = styled.header`
+  background-color: transparent;
+`;
+
 export const StyledNavbar = styled.nav<NavbarProps>`
   --padding-vertical: 40px;
   --padding-horizontal: 50px;

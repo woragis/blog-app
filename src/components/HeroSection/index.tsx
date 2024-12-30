@@ -1,8 +1,8 @@
-import { useHeroSectionModel } from "./model";
+import { useHeroSectionContainerModel } from "./model";
 import { HeroSectionView } from "./view";
 
-const HeroSection = () => {
-  const model = useHeroSectionModel();
+const HeroSection = ({ children }: { children: JSX.Element }) => {
+  const model = useHeroSectionContainerModel(children);
 
   return <HeroSectionView {...model} />;
 };

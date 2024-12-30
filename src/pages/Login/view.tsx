@@ -7,8 +7,7 @@ export const LoginView = ({
   handleLoginSubmit,
 }: ReturnType<typeof useLoginModel>) => {
   return (
-    <div>
-      LoginView
+    <main>
       <h1>Login</h1>
       <div>
         <form action="" method="post" onSubmit={handleLoginSubmit}>
@@ -33,6 +32,6 @@ export const LoginView = ({
         {auth.status === "loading" && <p>Loading...</p>}
         {auth.error && <p style={{ color: "red" }}>{auth.error}</p>}
       </div>
-    </div>
+    </main>
   );
 };
