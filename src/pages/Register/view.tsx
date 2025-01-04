@@ -1,5 +1,6 @@
+import Form from "../../components/Form";
 import { useRegisterModel } from "./model";
-import { RegisterForm, StyledRegisterPage } from "./styles";
+import { StyledRegisterPage } from "./styles";
 
 export const RegisterView = ({
   auth,
@@ -9,7 +10,7 @@ export const RegisterView = ({
 }: ReturnType<typeof useRegisterModel>) => {
   return (
     <StyledRegisterPage>
-      <RegisterForm action="" method="post" onSubmit={handleRegisterSubmit}>
+      <Form onSubmit={handleRegisterSubmit}>
         <h1>Register</h1>
         <input
           type="text"
@@ -38,7 +39,7 @@ export const RegisterView = ({
         <button>Register</button>
         {auth.status === "loading" && <p>Loading...</p>}
         {auth.error && <p style={{ color: "red" }}>{auth.error}</p>}
-      </RegisterForm>
+      </Form>
     </StyledRegisterPage>
   );
 };

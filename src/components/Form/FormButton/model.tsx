@@ -1,3 +1,3 @@
-export const useFormButtonModel = (children: string, onClick: () => void) => {
-  return { children, onClick };
+export const useFormButtonModel = (children: string) => {
+  return { children };
 };

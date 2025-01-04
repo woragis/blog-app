@@ -7,7 +7,7 @@ export const FormInputView = ({
   type,
   placeholder,
   value,
-  handleChange,
+  onChange,
 }: ReturnType<typeof useFormInputModel>) => {
   return (
     <StyledFormInput
@@ -16,7 +16,7 @@ export const FormInputView = ({
       type={type}
       placeholder={placeholder}
       value={value}
-      onChange={handleChange}
+      onChange={onChange}
     />
   );
 };

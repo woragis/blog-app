@@ -6,7 +6,7 @@ export const useFormInputModel = (
   type: string,
   placeholder: string,
   value: string,
-  handleChange: (event: ChangeEvent<HTMLInputElement>) => void
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void
 ) => {
-  return { id, name, type, placeholder, value, handleChange };
+  return { id, name, type, placeholder, value, onChange };
 };

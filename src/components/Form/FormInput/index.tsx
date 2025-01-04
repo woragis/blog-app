@@ -8,23 +8,16 @@ const FormInput = ({
   type,
   placeholder,
   value,
-  handleChange,
+  onChange,
 }: {
   id: string;
   name: string;
   type: string;
   placeholder: string;
   value: string;
-  handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }) => {
-  const model = useFormInputModel(
-    id,
-    name,
-    type,
-    placeholder,
-    value,
-    handleChange
-  );
+  const model = useFormInputModel(id, name, type, placeholder, value, onChange);
 
   return <FormInputView {...model} />;
 };
