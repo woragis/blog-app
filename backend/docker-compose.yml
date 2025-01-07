@@ -1,0 +1,44 @@
+services:
+  app:
+    container_name: blog-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # Map the host's port 8080 to the container's port 8080
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DATABASE_URL=postgres://postgres:password@db:5432/app_db?sslmode=disable
+      - REDIS_URL=redis://redis:6379
+    networks:
+      - app-network
+
+  db:
+    image: postgres:15
+    container_name: blog-postgres-database
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: app_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7
+    container_name: blog-redis-cache-database
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
+volumes:
+  db_data:
