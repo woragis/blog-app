@@ -5,8 +5,8 @@
 > [!TODO]  
 > Improve data transfer to be in byte code not JSON
 
-- [ ] - Update api connection URI
-- [ ] - Update models because of api change from old rust project to own go backend api
+- [x] - Update api connection URI
+- [x] - Update models because of api change from old rust project to own go backend api
 
 ## Warnings
 
