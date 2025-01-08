@@ -12,6 +12,7 @@ func main() {
 	database.Connect()
 	defer database.DB.Close()
 
+	// initialize tables in the database
 	database.InitializeTables()
 
 	// Initialize Gin
