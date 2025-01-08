@@ -38,6 +38,16 @@ func main() {
 		postGroup.DELETE("/:id", handlers.DeletePost)   // Delete Post
 	}
 
+	// Comment Routes
+	commentGroup := router.Group("/comments")
+	{
+		commentGroup.POST("/", handlers.CreateComment)        // Create Comment
+		commentGroup.GET("/post/:post_id", handlers.GetAllComments)  // Get All Comments for a Post
+		commentGroup.GET("/:id", handlers.GetCommentByID)     // Get Comment by ID
+		commentGroup.PUT("/:id", handlers.UpdateComment)      // Update Comment
+		commentGroup.DELETE("/:id", handlers.DeleteComment)   // Delete Comment
+	}
+
 	// Category Routes
 	categoryGroup := router.Group("/categories")
 	{
