@@ -12,6 +12,8 @@ func main() {
 	database.Connect()
 	defer database.DB.Close()
 
+	database.InitializeTables()
+
 	// Initialize Gin
 	router := gin.Default()
 

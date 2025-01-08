@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"log"
 	"net/http"
 
 	"blog-api/database"
@@ -22,6 +23,7 @@ func CreateUser(c *gin.Context) {
 	query := `INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`
 	err := database.DB.QueryRow(context.Background(), query, user.Name, user.Email, user.Password).Scan(&user.ID)
 	if err != nil {
+		log.Println("Error creating user: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return
 	}
@@ -34,6 +36,7 @@ func GetUsers(c *gin.Context) {
 	query := `SELECT id, name, email, password FROM users`
 	rows, err := database.DB.Query(context.Background(), query)
 	if err != nil {
+		log.Println("Error getting users: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch users"})
 		return
 	}
@@ -62,6 +65,7 @@ func GetUser(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	} else if err != nil {
+		log.Println("Error getting user: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch user"})
 		return
 	}
@@ -81,6 +85,7 @@ func UpdateUser(c *gin.Context) {
 	query := `UPDATE users SET name = $1, email = $2, password = $3 WHERE id = $4`
 	_, err := database.DB.Exec(context.Background(), query, user.Name, user.Email, user.Password, id)
 	if err != nil {
+		log.Println("Error updating user: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update user"})
 		return
 	}
@@ -94,6 +99,7 @@ func DeleteUser(c *gin.Context) {
 	query := `DELETE FROM users WHERE id = $1`
 	_, err := database.DB.Exec(context.Background(), query, id)
 	if err != nil {
+		log.Println("Error deleting user: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete user"})
 		return
 	}
