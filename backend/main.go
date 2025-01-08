@@ -3,7 +3,9 @@ package main
 import (
 	"blog-api/database"
 	"blog-api/handlers"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,13 +20,22 @@ func main() {
 	// Initialize Gin
 	router := gin.Default()
 
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:3000"}, // Allowed origins
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},        // Allowed methods
+        AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},        // Allowed headers
+        ExposeHeaders:    []string{"Content-Length"},                                 // Exposed headers
+        AllowCredentials: true,                                                       // Allow credentials like cookies
+        MaxAge:           12 * time.Hour, 
+	}))
+
 	// User Routes
 	userGroup := router.Group("/users")
 	{
 		userGroup.POST("/", handlers.CreateUser)
 		userGroup.GET("/", handlers.GetUsers)
 		userGroup.GET("/:id", handlers.GetUser)
-		userGroup.PUT("/id", handlers.UpdateUser)
+		userGroup.PUT("/:id", handlers.UpdateUser)
 		userGroup.DELETE("/:id", handlers.DeleteUser)
 	}
 
