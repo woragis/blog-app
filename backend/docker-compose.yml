@@ -25,7 +25,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - blog_db_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres", "-d", "blog"]
       interval: 10s
@@ -53,4 +53,4 @@ networks:
   blog-network:
 
 volumes:
-  db_data:
+  blog_db_data:
