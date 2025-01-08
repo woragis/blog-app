@@ -33,7 +33,7 @@ func CreateUser(c *gin.Context) {
 
 // GetUsers retrieves all users.
 func GetUsers(c *gin.Context) {
-	query := `SELECT id, name, email, password FROM users`
+	query := `SELECT id, name, email, password, created_at, updated_at FROM users`
 	rows, err := database.DB.Query(context.Background(), query)
 	if err != nil {
 		log.Println("Error getting users: ", err)
@@ -45,7 +45,7 @@ func GetUsers(c *gin.Context) {
 	var users []models.User
 	for rows.Next() {
 		var user models.User
-		if err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password); err != nil {
+		if err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to scan user"})
 			return
 		}
@@ -58,9 +58,9 @@ func GetUsers(c *gin.Context) {
 // GetUser retrieves a single user by ID.
 func GetUser(c *gin.Context) {
 	id := c.Param("id")
-	query := `SELECT id, name, email, password FROM users WHERE id = $1`
+	query := `SELECT id, name, email, password, created_at, updated_at FROM users WHERE id = $1`
 	var user models.User
-	err := database.DB.QueryRow(context.Background(), query, id).Scan(&user.ID, &user.Name, &user.Email, &user.Password)
+	err := database.DB.QueryRow(context.Background(), query, id).Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt)
 	if err == pgx.ErrNoRows {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
@@ -82,7 +82,7 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	query := `UPDATE users SET name = $1, email = $2, password = $3 WHERE id = $4`
+	query := `UPDATE users SET name = $1, email = $2, password = $3, updated_at = CURRENT_TIMESTAMP WHERE id = $4`
 	_, err := database.DB.Exec(context.Background(), query, user.Name, user.Email, user.Password, id)
 	if err != nil {
 		log.Println("Error updating user: ", err)
