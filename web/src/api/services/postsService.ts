@@ -1,6 +1,10 @@
 import axiosInstance from "../../api/axiosInstance";
 import { API_ENDPOINTS } from "../../api/endpoints";
-import { CreatePostRequest, PostResponse } from "../../types/posts.types";
+import {
+  CreatePostRequest,
+  PostResponse,
+  PostsResponse,
+} from "../../types/posts.types";
 
 export const getPostsService = async (token: string) => {
   console.log("API: starting posts 'get (many)' request");
@@ -8,7 +12,7 @@ export const getPostsService = async (token: string) => {
     headers: { authorization: `Bearer ${token}` },
   });
   console.log("API: finished posts 'get (many)' request");
-  return response.data as PostResponse[];
+  return response.data as PostsResponse;
 };
 
 export const createPostService = async (

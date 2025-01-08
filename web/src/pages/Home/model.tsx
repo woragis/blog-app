@@ -6,7 +6,7 @@ import { useAppDispatch } from "../../features/hooks";
 
 export const useHomeModel = () => {
   const token = useSelector((state: RootState) => state.auth.token);
-  const posts = useSelector((state: RootState) => state.posts.posts);
+  const posts = useSelector((state: RootState) => state.posts.data.posts);
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(getPosts(token));

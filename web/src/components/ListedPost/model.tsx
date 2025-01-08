@@ -1,5 +1,5 @@
-import { PostResponse } from "../../types/posts.types";
+import { Post } from "../../types/posts.types";
 
-export const useListedPostModel = (post: PostResponse) => {
+export const useListedPostModel = (post: Post) => {
   return { ...post };
 };

@@ -14,8 +14,9 @@ import {
 } from "../../types/posts.types";
 
 const initialState: PostsState = {
-  posts: [],
-  post: null,
+  data: {
+    posts: [],
+  },
   status: "idle",
   error: null,
 };
@@ -24,8 +25,8 @@ export const getPosts = createAsyncThunk(
   "posts/getMany",
   async (token: string, { rejectWithValue }) => {
     try {
-      const posts = await getPostsService(token);
-      return posts as PostResponse[];
+      const data = await getPostsService(token);
+      return data;
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to get posts"
@@ -114,7 +115,8 @@ const postsSlice = createSlice({
       })
       .addCase(getPosts.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.posts = action.payload;
+        state.error = null;
+        state.data = action.payload;
       })
       .addCase(getPosts.rejected, (state, action) => {
         state.status = "failed";
@@ -128,6 +130,7 @@ const postsSlice = createSlice({
       })
       .addCase(createPost.fulfilled, (state) => {
         state.status = "succeeded";
+        state.error = null;
       })
       .addCase(createPost.rejected, (state, action) => {
         state.status = "failed";
@@ -139,9 +142,9 @@ const postsSlice = createSlice({
         state.status = "loading";
         state.error = null;
       })
-      .addCase(getPost.fulfilled, (state, action) => {
+      .addCase(getPost.fulfilled, (state) => {
         state.status = "succeeded";
-        state.post = action.payload;
+        state.error = null;
       })
       .addCase(getPost.rejected, (state, action) => {
         state.status = "failed";
@@ -155,6 +158,7 @@ const postsSlice = createSlice({
       })
       .addCase(updatePost.fulfilled, (state) => {
         state.status = "succeeded";
+        state.error = null;
       })
       .addCase(updatePost.rejected, (state, action) => {
         state.status = "failed";
@@ -168,6 +172,7 @@ const postsSlice = createSlice({
       })
       .addCase(deletePost.fulfilled, (state) => {
         state.status = "succeeded";
+        state.error = null;
       })
       .addCase(deletePost.rejected, (state, action) => {
         state.status = "failed";

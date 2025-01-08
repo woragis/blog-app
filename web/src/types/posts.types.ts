@@ -6,7 +6,7 @@ export enum PostVisibility {
   Private = "private",
 }
 
-export interface PostResponse {
+export interface Post {
   id: number;
   title: string;
   body: string;
@@ -15,10 +15,16 @@ export interface PostResponse {
   created_at: string;
   updated_at: string;
 }
+export interface PostResponse {
+  posts: Post;
+}
+
+export interface PostsResponse {
+  posts: Post[];
+}
 
 export interface PostsState {
-  posts: PostResponse[];
-  post: PostResponse | null;
+  data: PostsResponse;
   status: ReduxStatus;
   error: string | null;
 }
