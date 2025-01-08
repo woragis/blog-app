@@ -32,8 +32,7 @@ func InitializeTables() {
 		log.Fatal("Database connection is not initialized")
 	}
 
-	// Define the SQL query to create the `users` table
-	createUsersTableQuery := `
+	createUsersTable := `
 	CREATE TABLE IF NOT EXISTS users (
 		id SERIAL PRIMARY KEY,
 		name VARCHAR(100) NOT NULL,
@@ -43,12 +42,42 @@ func InitializeTables() {
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	);
 	`
+	createCategoriesTable := `
+	CREATE TABLE IF NOT EXISTS categories (
+		id SERIAL PRIMARY KEY,
+		name VARCHAR(100) NOT NULL UNIQUE,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	);`
 
-	// Execute the query
-	_, err := DB.Exec(context.Background(), createUsersTableQuery)
-	if err != nil {
-		log.Fatalf("Failed to create 'users' table: %v\n", err)
+	createPostsTable := `
+	CREATE TABLE IF NOT EXISTS posts (
+		id SERIAL PRIMARY KEY,
+		title VARCHAR(255) NOT NULL,
+		content TEXT NOT NULL,
+		author_id INT REFERENCES users(id) ON DELETE CASCADE,
+		category_id INT REFERENCES categories(id) ON DELETE SET NULL,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	);`
+
+	createCommentsTable := `
+	CREATE TABLE IF NOT EXISTS comments (
+		id SERIAL PRIMARY KEY,
+		content TEXT NOT NULL,
+		post_id INT REFERENCES posts(id) ON DELETE CASCADE,
+		author_id INT REFERENCES users(id) ON DELETE CASCADE,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	);`
+
+	queries := []string{createUsersTable, createCategoriesTable, createPostsTable, createCommentsTable}
+
+	for _, query := range queries {
+		_, err := DB.Exec(context.Background(), query)
+		if err != nil {
+			log.Fatalf("Failed to execute query: %v\n", err)
+		}
 	}
 
-	log.Println("Users table initialized successfully!")
+	log.Println("All tables initialized successfully!")
 }
