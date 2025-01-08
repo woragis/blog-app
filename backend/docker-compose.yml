@@ -1,6 +1,7 @@
 services:
   blog-api:
     container_name: blog-backend
+    restart: always
     build:
       context: .
       dockerfile: Dockerfile
