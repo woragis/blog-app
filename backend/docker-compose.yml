@@ -1,5 +1,5 @@
 services:
-  golang-app:
+  blog-api:
     container_name: blog-backend
     build:
       context: .
@@ -7,17 +7,17 @@ services:
     ports:
       - "8080:8080" # Map the host's port 8080 to the container's port 8080
     depends_on:
-      - db
-      - redis
+      - blog-db
+      - blog-redis
     environment:
-      - DATABASE_URL=postgres://postgres:password@db:5432/blog?sslmode=disable
-      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgres://postgres:password@blog-db:5432/blog?sslmode=disable
+      - REDIS_URL=redis://blog-redis:6379
     networks:
       - blog-network
 
-  db:
-    image: postgres:15
-    container_name: blog-postgres-database
+  blog-db:
+    image: postgres:16.6
+    container_name: blog-postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -26,14 +26,26 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "blog"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
     networks:
       - blog-network
 
-  redis:
-    image: redis:7
-    container_name: blog-redis-cache
+  blog-redis:
+    image: redis:7.2.5
+    container_name: blog-redis
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
     networks:
       - blog-network
 
