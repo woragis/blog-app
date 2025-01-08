@@ -19,11 +19,34 @@ func main() {
 	router := gin.Default()
 
 	// User Routes
-	router.POST("/users", handlers.CreateUser)
-	router.GET("/users", handlers.GetUsers)
-	router.GET("/users/:id", handlers.GetUser)
-	router.PUT("/users/:id", handlers.UpdateUser)
-	router.DELETE("/users/:id", handlers.DeleteUser)
+	userGroup := router.Group("/users")
+	{
+		userGroup.POST("/", handlers.CreateUser)
+		userGroup.GET("/", handlers.GetUsers)
+		userGroup.GET("/:id", handlers.GetUser)
+		userGroup.PUT("/id", handlers.UpdateUser)
+		userGroup.DELETE("/:id", handlers.DeleteUser)
+	}
+
+	// Post Routes
+	postGroup := router.Group("/posts")
+	{
+		postGroup.POST("/", handlers.CreatePost)        // Create Post
+		postGroup.GET("/", handlers.GetAllPosts)        // Get All Posts
+		postGroup.GET("/:id", handlers.GetPostByID)     // Get Post by ID
+		postGroup.PUT("/:id", handlers.UpdatePost)      // Update Post
+		postGroup.DELETE("/:id", handlers.DeletePost)   // Delete Post
+	}
+
+	// Category Routes
+	categoryGroup := router.Group("/categories")
+	{
+		categoryGroup.POST("/", handlers.CreateCategory)        // Create Category
+		categoryGroup.GET("/", handlers.GetAllCategories)       // Get All Categories
+		categoryGroup.GET("/:id", handlers.GetCategoryByID)     // Get Category by ID
+		categoryGroup.PUT("/:id", handlers.UpdateCategory)      // Update Category
+		categoryGroup.DELETE("/:id", handlers.DeleteCategory)   // Delete Category
+	}
 
 	// Start the server
 	router.Run(":8080")

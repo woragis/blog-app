@@ -20,8 +20,8 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	query := `INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`
-	err := database.DB.QueryRow(context.Background(), query, user.Name, user.Email, user.Password).Scan(&user.ID)
+	query := `INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, created_at, updated_at`
+	err := database.DB.QueryRow(context.Background(), query, user.Name, user.Email, user.Password).Scan(&user.ID, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		log.Println("Error creating user: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
