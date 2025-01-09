@@ -23,11 +23,18 @@ func main() {
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:3000"}, // Allowed origins
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},        // Allowed methods
-        AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},        // Allowed headers
-        ExposeHeaders:    []string{"Content-Length"},                                 // Exposed headers
-        AllowCredentials: true,                                                       // Allow credentials like cookies
-        MaxAge:           12 * time.Hour, 
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},        // Allowed headers
+		ExposeHeaders:    []string{"Content-Length"},                                 // Exposed headers
+		AllowCredentials: true,                                                       // Allow credentials like cookies
+		MaxAge:           12 * time.Hour,
 	}))
+
+	// Auth Routes
+	authGroup := router.Group("/auth")
+	{
+		authGroup.POST("/login", handlers.Login)
+		authGroup.POST("/register", handlers.Register)
+	}
 
 	// User Routes
 	userGroup := router.Group("/users")
@@ -42,31 +49,31 @@ func main() {
 	// Post Routes
 	postGroup := router.Group("/posts")
 	{
-		postGroup.POST("/", handlers.CreatePost)        // Create Post
-		postGroup.GET("/", handlers.GetAllPosts)        // Get All Posts
-		postGroup.GET("/:id", handlers.GetPostByID)     // Get Post by ID
-		postGroup.PUT("/:id", handlers.UpdatePost)      // Update Post
-		postGroup.DELETE("/:id", handlers.DeletePost)   // Delete Post
+		postGroup.POST("/", handlers.CreatePost)      // Create Post
+		postGroup.GET("/", handlers.GetAllPosts)      // Get All Posts
+		postGroup.GET("/:id", handlers.GetPostByID)   // Get Post by ID
+		postGroup.PUT("/:id", handlers.UpdatePost)    // Update Post
+		postGroup.DELETE("/:id", handlers.DeletePost) // Delete Post
 	}
 
 	// Comment Routes
 	commentGroup := router.Group("/comments")
 	{
-		commentGroup.POST("/", handlers.CreateComment)        // Create Comment
-		commentGroup.GET("/post/:post_id", handlers.GetAllComments)  // Get All Comments for a Post
-		commentGroup.GET("/:id", handlers.GetCommentByID)     // Get Comment by ID
-		commentGroup.PUT("/:id", handlers.UpdateComment)      // Update Comment
-		commentGroup.DELETE("/:id", handlers.DeleteComment)   // Delete Comment
+		commentGroup.POST("/", handlers.CreateComment)              // Create Comment
+		commentGroup.GET("/post/:post_id", handlers.GetAllComments) // Get All Comments for a Post
+		commentGroup.GET("/:id", handlers.GetCommentByID)           // Get Comment by ID
+		commentGroup.PUT("/:id", handlers.UpdateComment)            // Update Comment
+		commentGroup.DELETE("/:id", handlers.DeleteComment)         // Delete Comment
 	}
 
 	// Category Routes
 	categoryGroup := router.Group("/categories")
 	{
-		categoryGroup.POST("/", handlers.CreateCategory)        // Create Category
-		categoryGroup.GET("/", handlers.GetAllCategories)       // Get All Categories
-		categoryGroup.GET("/:id", handlers.GetCategoryByID)     // Get Category by ID
-		categoryGroup.PUT("/:id", handlers.UpdateCategory)      // Update Category
-		categoryGroup.DELETE("/:id", handlers.DeleteCategory)   // Delete Category
+		categoryGroup.POST("/", handlers.CreateCategory)      // Create Category
+		categoryGroup.GET("/", handlers.GetAllCategories)     // Get All Categories
+		categoryGroup.GET("/:id", handlers.GetCategoryByID)   // Get Category by ID
+		categoryGroup.PUT("/:id", handlers.UpdateCategory)    // Update Category
+		categoryGroup.DELETE("/:id", handlers.DeleteCategory) // Delete Category
 	}
 
 	// Start the server
