@@ -1,11 +1,53 @@
 services:
-  react-app:
-    container_name: blog-frontend
+  blog-web-1:
+    container_name: blog-web-1
+    restart: always
     build:
       context: .
     ports:
-      - "5173:5173"
+      - "5174:5173"
     volumes:
       - .:/app
-    stdin_open: true
-    tty: true
+    networks:
+      - blog-network
+
+  blog-web-2:
+    container_name: blog-web-2
+    restart: always
+    build:
+      context: .
+    ports:
+      - "5175:5173"
+    volumes:
+      - .:/app
+    networks:
+      - blog-network
+
+  blog-web-3:
+    container_name: blog-web-3
+    restart: always
+    build:
+      context: .
+    ports:
+      - "5176:5173"
+    volumes:
+      - .:/app
+    networks:
+      - blog-network
+
+  nginx:
+    image: nginx:latest
+    container_name: blog-web-nginx
+    depends_on:
+      - blog-web-1
+      - blog-web-2
+      - blog-web-3
+    ports:
+      - "5173:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - blog-network
+
+networks:
+  blog-network:

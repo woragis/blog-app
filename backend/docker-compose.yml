@@ -35,9 +35,11 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: blog-nginx
+    container_name: blog-backend-nginx
     depends_on:
-      - blog-api
+      - blog-api-1
+      - blog-api-2
+      - blog-api-3
     ports:
       - "80:80" # Expose NGINX on port 80
     volumes:
