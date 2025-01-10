@@ -43,9 +43,9 @@ services:
       - blog-web-2
       - blog-web-3
     ports:
-      - "5173:80"
+      - "80:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx.conf:/etc/nginx/web/nginx.conf:ro
     networks:
       - blog-network
 
