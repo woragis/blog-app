@@ -49,7 +49,7 @@ services:
 
   blog-api-1:
     container_name: blog-api-1
-    restart: always
+    restart: on-failure:3
     build:
       context: .
       dockerfile: Dockerfile
@@ -65,7 +65,7 @@ services:
       - blog-network
   blog-api-2:
     container_name: blog-api-2
-    restart: always
+    restart: on-failure:3
     build:
       context: .
       dockerfile: Dockerfile
@@ -81,7 +81,7 @@ services:
       - blog-network
   blog-api-3:
     container_name: blog-api-3
-    restart: always
+    restart: on-failure:3
     build:
       context: .
       dockerfile: Dockerfile
