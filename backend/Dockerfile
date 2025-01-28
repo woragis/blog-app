@@ -1,5 +1,5 @@
 # Step 1: Use an official Go image as the base
-FROM golang:1.23.4
+FROM golang:1.23.4 AS builder
 
 # Step 2: Set the working directory
 WORKDIR /app
@@ -13,21 +13,24 @@ RUN go mod download
 # Step 5: Copy the source code into the container
 COPY . .
 
-CMD [ "go", "run", "main.go" ]
-# # Step 6: Build the application
-# RUN go build -o main
+# Step 6: Build the application
+RUN go build -o /app/main ./main.go
 
-# # Step 7: Use a minimal image for production
-# FROM alpine:latest
+# Step 7: Use a minimal image for production
+FROM ubuntu:22.04
 
-# # Step 8: Install certificates (if needed for HTTPS requests)
-# RUN apk --no-cache add ca-certificates
+# Step 8: Install certificates (if needed for HTTPS requests)
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# # Step 9: Set working directory and copy the binary
-# WORKDIR /app
+# Step 9: Set working directory and copy the binary
+WORKDIR /app
+COPY --from=builder /app/main .
 
-# # Step 10: Expose the application port
-# EXPOSE 8080
+# Step 10: Expose the application port
+EXPOSE 8080
 
 # # Step 11: Run the application
-# CMD ["./main"]
+CMD ["./main"]

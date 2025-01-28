@@ -1,7 +1,7 @@
 services:
-  blog-db:
+  blog-database:
     image: postgres:16.6
-    container_name: blog-postgres
+    container_name: blog-database
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - blog_db_data:/var/lib/postgresql/data
+      - blog_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres", "-d", "blog"]
       interval: 10s
@@ -19,9 +19,9 @@ services:
     networks:
       - blog-network
 
-  blog-redis:
+  blog-cache:
     image: redis:7.2.5
-    container_name: blog-redis
+    container_name: blog-cache
     ports:
       - "6379:6379"
     healthcheck:
@@ -33,71 +33,42 @@ services:
     networks:
       - blog-network
 
-  nginx:
-    image: nginx:latest
-    container_name: blog-backend-nginx
-    depends_on:
-      - blog-api-1
-      - blog-api-2
-      - blog-api-3
-    ports:
-      - "8080:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/api/nginx.conf:ro
-    networks:
-      - blog-network
+  # nginx:
+  #   image: nginx:1.27.3
+  #   container_name: blog-backend-nginx
+  #   depends_on:
+  #     - blog-api-1
+  #     - blog-api-2
+  #     - blog-api-3
+  #   ports:
+  #     - "8080:80"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/api/nginx.conf:ro
+  #   networks:
+  #     - blog-network
 
-  blog-api-1:
-    container_name: blog-api-1
-    restart: on-failure:3
+  blog-backend:
+    container_name: blog-backend
+    restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8081:8080"
+      - "8080:8080"
     depends_on:
-      - blog-db
-      - blog-redis
+      - blog-database
+      - blog-cache
     environment:
-      - DATABASE_URL=postgres://postgres:password@blog-db:5432/blog?sslmode=disable
-      - REDIS_URL=redis://blog-redis:6379
-    networks:
-      - blog-network
-  blog-api-2:
-    container_name: blog-api-2
-    restart: on-failure:3
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8082:8080"
-    depends_on:
-      - blog-db
-      - blog-redis
-    environment:
-      - DATABASE_URL=postgres://postgres:password@blog-db:5432/blog?sslmode=disable
-      - REDIS_URL=redis://blog-redis:6379
-    networks:
-      - blog-network
-  blog-api-3:
-    container_name: blog-api-3
-    restart: on-failure:3
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8083:8080"
-    depends_on:
-      - blog-db
-      - blog-redis
-    environment:
-      - DATABASE_URL=postgres://postgres:password@blog-db:5432/blog?sslmode=disable
-      - REDIS_URL=redis://blog-redis:6379
+      - DATABASE_URL=postgres://postgres:password@blog-database:5432/blog?sslmode=disable
+      - REDIS_URL=redis://blog-cache:6379
     networks:
       - blog-network
 
 networks:
   blog-network:
+    name: blog-network
+    driver: bridge
 
 volumes:
-  blog_db_data:
+  blog_data:
+    name: blog-data
