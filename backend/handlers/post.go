@@ -49,7 +49,7 @@ func GetAllPosts(c *gin.Context) {
 	utils.SendResponse(
 		c,
 		http.StatusOK,
-		"Successfully retrieved post",
+		"Successfully retrieved posts",
 		nil,
 		posts,
 	)
@@ -86,14 +86,18 @@ func GetPostByID(c *gin.Context) {
 }
 
 func CreatePost(c *gin.Context) {
-	var post models.Post
+	post := models.Post {
+		Title:    `json:"title" binding:"required,email"`,
+		Content: `json:"content" binding:"required"`,
+		AuthorID: `json:"author_id" binding:"required"`,
+	}
 
 	if err := c.ShouldBindJSON(&post); err != nil {
 		utils.SendResponse(
 			c,
 			http.StatusBadRequest,
 			"Failed to create post: invalid input",
-			err,
+			err.Error(),
 			nil,
 		)
 		return
