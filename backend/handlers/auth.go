@@ -5,80 +5,153 @@ import (
 	"net/http"
 	"time"
 
-	"blog-api/database"
-	"blog-api/utils"
+	"blog-backend/database"
+	"blog-backend/models"
+	"blog-backend/utils"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func Login(c *gin.Context) {
-	var input struct {
-		Email    string `json:"email" binding:"required,email"`
-		Password string `json:"password" binding:"required"`
+	user := models.User{
+		Email:    `json:"email" binding:"required,email"`,
+		Password: `json:"password" binding:"required"`,
 	}
 
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := c.ShouldBindJSON(&user); err != nil {
+		utils.SendResponse(
+			c,
+			http.StatusBadRequest,
+			"Failed to login: invalid input",
+			err,
+			nil,
+		)
 		return
 	}
 
-	var userID int64
-	var hashedPassword string
+	inputPassword := user.Password
 
-	query := `SELECT id, password FROM users WHERE email = $1`
+	query := `SELECT id, name, password, created_at, updated_at FROM users WHERE email = $1`
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	err := database.DB.QueryRow(ctx, query, input.Email).Scan(&userID, &hashedPassword)
+	err := database.DB.QueryRow(ctx, query, user.Email).Scan(&user.ID, &user.Name, &user.Password, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+		utils.SendResponse(
+			c,
+			http.StatusUnauthorized,
+			"Failed to login: invalid credentials",
+			err,
+			nil,
+		)
 		return
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(input.Password)); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(inputPassword)); err != nil {
+		utils.SendResponse(
+			c,
+			http.StatusUnauthorized,
+			"Failed to login: invalid credentials",
+			err,
+			nil,
+		)
 		return
 	}
 
-	token, err := utils.GenerateJWT(userID)
+	token, err := utils.GenerateJWT(user.ID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+		utils.SendResponse(
+			c,
+			http.StatusInternalServerError,
+			"Failed to login: failed to generate token",
+			err,
+			nil,
+		)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	utils.SendResponse(
+		c,
+		http.StatusOK,
+		"Successfully logged in",
+		nil,
+		map[string]interface{}{
+			"token": token,
+			"user":  user,
+		},
+	)
 }
 
 func Register(c *gin.Context) {
-	var input struct {
-		Name     string `json:"name" binding:"required"`
-		Email    string `json:"email" binding:"required,email"`
-		Password string `json:"password" binding:"required"`
+	user := models.User{
+		Name:     `json:"name" binding:"required"`,
+		Email:    `json:"email" binding:"required,email"`,
+		Password: `json:"password" binding:"required"`,
 	}
 
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := c.ShouldBindJSON(&user); err != nil {
+		utils.SendResponse(
+			c,
+			http.StatusBadRequest,
+			"Failed to register: invalid input",
+			err,
+			nil,
+		)
 		return
 	}
 
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
+		utils.SendResponse(
+			c,
+			http.StatusInternalServerError,
+			"Failed to register: failed to hash password",
+			err,
+			nil,
+		)
 		return
 	}
 
-	query := `INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`
-	var userID int64
+	query := `INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, created_at, updated_at`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	err = database.DB.QueryRow(ctx, query, input.Name, input.Email, string(hashedPassword)).Scan(&userID)
+	err = database.DB.QueryRow(ctx, query, user.Name, user.Email, string(hashedPassword)).Scan(&user.ID, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+		utils.SendResponse(
+			c,
+			http.StatusInternalServerError,
+			"Failed to register: failed to create user",
+			err,
+			nil,
+		)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "User registered successfully", "user_id": userID})
+	token, err := utils.GenerateJWT(user.ID)
+	if err != nil {
+		utils.SendResponse(
+			c,
+			http.StatusInternalServerError,
+			"Failed to register: failed to generate token",
+			err,
+			nil,
+		)
+		return
+	}
+
+	user.Password = string(hashedPassword)
+
+	utils.SendResponse(
+		c,
+		http.StatusCreated,
+		"Successfully registered",
+		nil,
+		map[string]interface{}{
+			"user":  user,
+			"token": token,
+		},
+	)
 }

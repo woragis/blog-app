@@ -10,7 +10,6 @@ import (
 
 var DB *pgxpool.Pool
 
-// Connect initializes a PostgreSQL connection pool.
 func Connect() {
 	dsn := os.Getenv("DATABASE_URL")
 	if dsn == "" {
@@ -25,16 +24,18 @@ func Connect() {
 	log.Println("Connected to PostgreSQL database!")
 }
 
-// InitializeTables creates all required tables in the database.
 func InitializeTables() {
-	// Check if DB is initialized
 	if DB == nil {
 		log.Fatal("Database connection is not initialized")
 	}
 
+	createUuidExtension := `
+	CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+	`
+
 	createUsersTable := `
 	CREATE TABLE IF NOT EXISTS users (
-		id SERIAL PRIMARY KEY,
+		id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 		name VARCHAR(100) NOT NULL,
 		email VARCHAR(100) UNIQUE NOT NULL,
 		password VARCHAR(255) NOT NULL,
@@ -42,35 +43,34 @@ func InitializeTables() {
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	);
 	`
-	createCategoriesTable := `
-	CREATE TABLE IF NOT EXISTS categories (
-		id SERIAL PRIMARY KEY,
-		name VARCHAR(100) NOT NULL UNIQUE,
-		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-	);`
+	// createCategoriesTable := `
+	// CREATE TABLE IF NOT EXISTS categories (
+	// 	id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+	// 	name VARCHAR(100) NOT NULL UNIQUE,
+	// 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	// 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	// );`
 
 	createPostsTable := `
 	CREATE TABLE IF NOT EXISTS posts (
-		id SERIAL PRIMARY KEY,
+		id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 		title VARCHAR(255) NOT NULL,
 		content TEXT NOT NULL,
-		author_id INT REFERENCES users(id) ON DELETE CASCADE,
-		category_id INT REFERENCES categories(id) ON DELETE SET NULL,
+		author_id UUID REFERENCES users(id) ON DELETE CASCADE,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	);`
 
-	createCommentsTable := `
-	CREATE TABLE IF NOT EXISTS comments (
-		id SERIAL PRIMARY KEY,
-		content TEXT NOT NULL,
-		post_id INT REFERENCES posts(id) ON DELETE CASCADE,
-		author_id INT REFERENCES users(id) ON DELETE CASCADE,
-		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-	);`
+	// createCommentsTable := `
+	// CREATE TABLE IF NOT EXISTS comments (
+	//	id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+	// 	content TEXT NOT NULL,
+	// 	post_id UUID REFERENCES posts(id) ON DELETE CASCADE,
+	// 	author_id UUID REFERENCES users(id) ON DELETE CASCADE,
+	// 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	// );`
 
-	queries := []string{createUsersTable, createCategoriesTable, createPostsTable, createCommentsTable}
+	queries := []string{createUuidExtension, createUsersTable, createPostsTable}
 
 	for _, query := range queries {
 		_, err := DB.Exec(context.Background(), query)

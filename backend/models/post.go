@@ -1,13 +1,16 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Post struct {
-	ID         int       `json:"id"`
+	ID         uuid.UUID `json:"id"`
 	Title      string    `json:"title"`
 	Content    string    `json:"content"`
-	AuthorID   int       `json:"author_id"`
-	CategoryID int       `json:"category_id"`
+	AuthorID   uuid.UUID `json:"author_id"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
 }

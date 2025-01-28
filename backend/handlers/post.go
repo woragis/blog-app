@@ -3,48 +3,25 @@ package handlers
 import (
 	"net/http"
 
-	"blog-api/database"
-	"blog-api/models"
+	"blog-backend/database"
+	"blog-backend/models"
+	"blog-backend/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
-
-func CreatePost(c *gin.Context) {
-	var post models.Post
-
-	// Bind JSON to the post struct
-	if err := c.ShouldBindJSON(&post); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
-		return
-	}
-
-	// Insert new post into the database
-	query := `INSERT INTO posts (title, content, author_id, category_id) VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at`
-	err := database.DB.QueryRow(
-		c.Request.Context(),
-		query,
-		post.Title,
-		post.Content,
-		post.AuthorID,
-		post.CategoryID,
-	).Scan(&post.ID, &post.CreatedAt, &post.UpdatedAt)
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create post"})
-		return
-	}
-
-	c.JSON(http.StatusCreated, post)
-}
-
-
 func GetAllPosts(c *gin.Context) {
-	query := `SELECT id, title, content, author_id, category_id, created_at, updated_at FROM posts`
+	query := `SELECT id, title, content, author_id, created_at, updated_at FROM posts;`
 	rows, err := database.DB.Query(c.Request.Context(), query)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve posts"})
+		utils.SendResponse(
+			c,
+			http.StatusInternalServerError,
+			"Failed to retrieve posts",
+			err,
+			nil,
+		)
 		return
 	}
 	defer rows.Close()
@@ -52,77 +29,171 @@ func GetAllPosts(c *gin.Context) {
 	var posts []models.Post
 	for rows.Next() {
 		var post models.Post
-		if err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.AuthorID, &post.CategoryID, &post.CreatedAt, &post.UpdatedAt); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to process post data"})
+		if err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.AuthorID, &post.CreatedAt, &post.UpdatedAt); err != nil {
+			utils.SendResponse(
+				c,
+				http.StatusInternalServerError,
+				"Failed to process post data",
+				err,
+				nil,
+			)
 			return
 		}
 		posts = append(posts, post)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"posts": posts})
-}
+	if posts == nil {
+		posts = []models.Post{}
+	}
 
+	utils.SendResponse(
+		c,
+		http.StatusOK,
+		"Successfully retrieved post",
+		nil,
+		posts,
+	)
+}
 
 func GetPostByID(c *gin.Context) {
 	id := c.Param("id")
 
-	query := `SELECT id, title, content, author_id, category_id, created_at, updated_at FROM posts WHERE id=$1`
+	query := `SELECT id, title, content, author_id, created_at, updated_at FROM posts WHERE id=$1;`
 	row := database.DB.QueryRow(c.Request.Context(), query, id)
 
 	var post models.Post
-	err := row.Scan(&post.ID, &post.Title, &post.Content, &post.AuthorID, &post.CategoryID, &post.CreatedAt, &post.UpdatedAt)
+
+	err := row.Scan(&post.ID, &post.Title, &post.Content, &post.AuthorID, &post.CreatedAt, &post.UpdatedAt)
 
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Post not found"})
+		utils.SendResponse(
+			c,
+			http.StatusNotFound,
+			"Failed to retrieve post: post not found",
+			err,
+			nil,
+		)
 		return
 	}
 
-	c.JSON(http.StatusOK, post)
+	utils.SendResponse(
+		c,
+		http.StatusOK,
+		"Successfully retrieved post",
+		nil,
+		post,
+	)
 }
 
-
-func UpdatePost(c *gin.Context) {
-	id := c.Param("id")
+func CreatePost(c *gin.Context) {
 	var post models.Post
 
-	// Bind JSON to the post struct
 	if err := c.ShouldBindJSON(&post); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		utils.SendResponse(
+			c,
+			http.StatusBadRequest,
+			"Failed to create post: invalid input",
+			err,
+			nil,
+		)
 		return
 	}
 
-	// Update post in the database
-	query := `UPDATE posts SET title=$1, content=$2, author_id=$3, category_id=$4, updated_at=NOW() WHERE id=$5 RETURNING id, created_at, updated_at`
+	query := `INSERT INTO posts (title, content, author_id) VALUES ($1, $2, $3) RETURNING id, created_at, updated_at;`
 	err := database.DB.QueryRow(
 		c.Request.Context(),
 		query,
 		post.Title,
 		post.Content,
 		post.AuthorID,
-		post.CategoryID,
+	).Scan(&post.ID, &post.CreatedAt, &post.UpdatedAt)
+
+	if err != nil {
+		utils.SendResponse(
+			c,
+			http.StatusInternalServerError,
+			"Failed to create post",
+			err,
+			nil,
+		)
+		return
+	}
+
+	utils.SendResponse(
+		c,
+		http.StatusCreated,
+		"Successfully created post",
+		nil,
+		post,
+	)
+}
+
+func UpdatePost(c *gin.Context) {
+	id := c.Param("id")
+	var post models.Post
+
+	if err := c.ShouldBindJSON(&post); err != nil {
+		utils.SendResponse(
+			c,
+			http.StatusBadRequest,
+			"Could not update post: invalid input",
+			err,
+			nil,
+		)
+		return
+	}
+
+	query := `UPDATE posts SET title=$1, content=$2, author_id=$3 WHERE id=$4 RETURNING id, created_at, updated_at;`
+	err := database.DB.QueryRow(
+		c.Request.Context(),
+		query,
+		post.Title,
+		post.Content,
+		post.AuthorID,
 		id,
 	).Scan(&post.ID, &post.CreatedAt, &post.UpdatedAt)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update post"})
+		utils.SendResponse(
+			c,
+			http.StatusInternalServerError,
+			"Could not update post",
+			err,
+			nil,
+		)
 		return
 	}
 
-	c.JSON(http.StatusOK, post)
+	utils.SendResponse(
+		c,
+		http.StatusOK,
+		"Successfully updated post",
+		nil,
+		post,
+	)
 }
-
 
 func DeletePost(c *gin.Context) {
 	id := c.Param("id")
 
-	// Delete post from the database
-	query := `DELETE FROM posts WHERE id=$1`
+	query := `DELETE FROM posts WHERE id=$1;`
 	_, err := database.DB.Exec(c.Request.Context(), query, id)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete post"})
+		utils.SendResponse(c,
+			http.StatusInternalServerError,
+			"Could not delete post",
+			err,
+			false,
+		)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Post deleted successfully"})
+	utils.SendResponse(
+		c,
+		http.StatusOK,
+		"Successfully deleted post",
+		nil,
+		true,
+	)
 }
